@@ -2,110 +2,88 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aura AI | FR 科技公司</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background-color: #02040a;
-            color: #ffffff;
-            font-family: 'Noto Sans TC', sans-serif;
-            overflow-x: hidden;
-        }
-        /* 科技藍按鈕與反光波紋 */
-        .aura-btn {
-            position: relative;
-            background: linear-gradient(135deg, #0062ff 0%, #003db3 100%);
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            box-shadow: 0 4px 15px rgba(0, 98, 255, 0.3);
-        }
-        .aura-btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
-        }
-        .aura-btn:hover::before { left: 100%; }
-        .aura-btn:active { transform: scale(0.98); }
+    <script type="module">
+        import { HfInference } from "https://cdn.jsdelivr.net/npm/@huggingface/inference@2.6.4/+esm";
 
-        /* 磨砂玻璃效果 */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        // 已植入您的專屬能量鑰匙
+        const inference = new HfInference("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");
+
+        window.generateAura = async () => {
+            const prompt = document.getElementById('prompt').value;
+            const btn = document.getElementById('gen-btn');
+            const status = document.getElementById('status');
+            const display = document.getElementById('display');
+
+            if (!prompt) return alert("請輸入創作靈感");
+
+            try {
+                btn.disabled = true;
+                status.innerText = "✨ Aura 正在串接 FR 科技算力中心...";
+                
+                // 調用最強大的開源生成引擎
+                const blob = await inference.textToImage({
+                    model: "stabilityai/stable-diffusion-xl-base-1.0",
+                    inputs: prompt + ", cinematic lighting, high resolution, masterpiece",
+                });
+
+                const url = URL.createObjectURL(blob);
+                display.innerHTML = `<img src="${url}" class="w-full rounded-3xl shadow-[0_0_40px_rgba(59,130,246,0.3)] border border-blue-500/30 animate-fade-in">`;
+                status.innerText = "✅ Aura 生成成功";
+            } catch (err) {
+                console.error(err);
+                status.innerText = "❌ 算力排隊中，請 10 秒後再點擊一次";
+            } finally {
+                btn.disabled = false;
+            }
+        };
+    </script>
+    <style>
+        body { background: #000; color: #fff; font-family: sans-serif; }
+        .btn-aura {
+            background: linear-gradient(135deg, #0066ff 0%, #0044cc 100%);
+            position: relative; overflow: hidden;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        /* 科技藍反光波紋 */
+        .btn-aura::before {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.6s;
+        }
+        .btn-aura:hover::before { left: 100%; }
+        .btn-aura:active { transform: scale(0.96); }
+        .animate-fade-in { animation: fadeIn 1s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center">
+<body class="min-h-screen flex flex-col items-center justify-center p-6">
 
-    <div class="fixed top-0 left-0 w-full h-full -z-10">
-        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-900/20 blur-[120px] rounded-full"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-900/20 blur-[120px] rounded-full"></div>
-    </div>
-
-    <nav class="w-full max-w-7xl p-8 flex justify-between items-center">
-        <div class="text-2xl font-black tracking-tighter italic">AURA <span class="text-blue-500 font-light">by FR Tech</span></div>
-        <div class="flex gap-6 text-sm text-gray-400 font-medium">
-            <a href="#" class="hover:text-white transition">產品介紹</a>
-            <a href="#" class="hover:text-white transition">解決方案</a>
-            <a href="#" class="border border-white/20 px-4 py-1 rounded-full hover:bg-white hover:text-black transition">登入</a>
-        </div>
-    </nav>
-
-    <main class="w-full max-w-4xl px-6 py-12 space-y-16 text-center">
-        <section class="space-y-4">
-            <h1 class="text-5xl md:text-7xl font-black leading-tight tracking-tight">
-                免費 AI 影片生成器：<br>
-                用 <span class="text-blue-500">Aura</span> 製作震撼影片
-            </h1>
-            <p class="text-gray-400 text-lg md:text-xl font-light">
-                由 FR 科技研發，將您的文字描述轉化為高畫質電影畫面。
-            </p>
-        </section>
-
-        <div class="glass-panel p-2 rounded-[2rem] shadow-2xl">
-            <div class="bg-[#0d1117] rounded-[1.8rem] p-6 md:p-10 space-y-8">
-                <div class="space-y-4 text-left">
-                    <label class="text-sm font-bold text-gray-500 uppercase tracking-widest ml-1">輸入您的創意指令</label>
-                    <textarea id="prompt-input" 
-                        class="w-full bg-white/5 border border-white/10 rounded-2xl p-6 text-xl text-white placeholder:text-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition min-h-[150px]"
-                        placeholder="例如：一名太空人在霓虹色彩的森林中漫步..."></textarea>
-                </div>
-
-                <button class="aura-btn w-full py-5 rounded-2xl text-xl font-black tracking-widest text-white shadow-xl shadow-blue-500/20">
-                    立即生成 Aura 影片
-                </button>
-            </div>
+    <div class="max-w-xl w-full space-y-12">
+        <div class="text-center">
+            <h1 class="text-6xl font-black italic tracking-tighter aura-glow">AURA <span class="text-blue-500 font-light">AI</span></h1>
+            <p class="text-zinc-600 text-[10px] tracking-[0.5em] mt-3 font-bold uppercase">FR Technology System</p>
         </div>
 
-        <div class="space-y-6">
-            <div class="flex items-center justify-center gap-2">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-ping"></span>
-                <h2 class="text-xl font-bold tracking-widest">AURA 雲端引擎實時預覽</h2>
-            </div>
+        <div class="bg-zinc-900/80 p-8 rounded-[2.5rem] border border-zinc-800 shadow-2xl backdrop-blur-xl">
+            <textarea id="prompt" 
+                class="w-full bg-transparent border-none focus:ring-0 text-xl md:text-2xl h-32 placeholder:text-zinc-800 text-white resize-none" 
+                placeholder="描述一個驚人的畫面..."></textarea>
             
-            <div class="glass-panel aspect-video w-full rounded-3xl overflow-hidden shadow-2xl">
-                <iframe
-                    src="https://tencent-hunyuanvideo.hf.space"
-                    frameborder="0"
-                    class="w-full h-full"
-                    allowtransparency="true"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                ></iframe>
-            </div>
-            <p class="text-gray-500 text-sm">
-                * 註：若預覽框內顯示「過載」，代表 FR 科技雲端排隊人數較多，請稍候片刻。
-            </p>
+            <button id="gen-btn" onclick="generateAura()" 
+                class="btn-aura w-full py-5 mt-6 rounded-2xl font-black text-xl tracking-widest uppercase text-white shadow-lg shadow-blue-900/20">
+                啟動影片生成
+            </button>
+            <p id="status" class="mt-4 text-blue-400 text-xs font-bold tracking-widest"></p>
         </div>
-    </main>
 
-    <footer class="w-full py-12 text-center text-gray-600 border-t border-white/5 mt-20">
-        <p class="text-sm">© 2026 FR 科技公司 (FR Technology Co.). Aura AI v1.0.0</p>
-    </footer>
+        <div id="display" class="aspect-square w-full rounded-[2.5rem] bg-zinc-900/50 border border-zinc-800/50 flex flex-col items-center justify-center group overflow-hidden">
+            <div class="text-zinc-800 text-5xl mb-4 group-hover:scale-110 transition-transform">🎞️</div>
+            <p class="text-zinc-700 text-xs font-bold tracking-[0.2em]">AURA ENGINE STANDBY</p>
+        </div>
+    </div>
 
 </body>
 </html>

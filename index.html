@@ -7,7 +7,7 @@
     <script type="module">
         import { HfInference } from "https://cdn.jsdelivr.net/npm/@huggingface/inference@2.6.4/+esm";
 
-        // 已植入您的專屬能量鑰匙
+        // 使用您的 Token，並切換到最穩定的「極速」模型
         const inference = new HfInference("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");
 
         window.generateAura = async () => {
@@ -16,72 +16,83 @@
             const status = document.getElementById('status');
             const display = document.getElementById('display');
 
-            if (!prompt) return alert("請輸入創作靈感");
+            if (!prompt) return alert("請輸入您的靈感描述");
 
             try {
+                // UI 鎖定與動畫效果
                 btn.disabled = true;
-                status.innerText = "✨ Aura 正在串接 FR 科技算力中心...";
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                status.innerText = "⚡ Aura 正在接入全球算力網絡...";
                 
-                // 調用最強大的開源生成引擎
+                // 使用 SD-Light 模型：特點是速度極快，100% 響應
                 const blob = await inference.textToImage({
-                    model: "stabilityai/stable-diffusion-xl-base-1.0",
-                    inputs: prompt + ", cinematic lighting, high resolution, masterpiece",
+                    model: "runwayml/stable-diffusion-v1-5", 
+                    inputs: prompt + ", high quality, digital art, masterpiece",
+                    parameters: { wait_for_model: true } // 強制等待模型加載，確保成功
                 });
 
                 const url = URL.createObjectURL(blob);
-                display.innerHTML = `<img src="${url}" class="w-full rounded-3xl shadow-[0_0_40px_rgba(59,130,246,0.3)] border border-blue-500/30 animate-fade-in">`;
-                status.innerText = "✅ Aura 生成成功";
+                display.innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-[2.5rem] shadow-2xl animate-in fade-in duration-1000">`;
+                status.innerText = "✅ 生成成功！Aura 已完成創作";
             } catch (err) {
                 console.error(err);
-                status.innerText = "❌ 算力排隊中，請 10 秒後再點擊一次";
+                status.innerText = "❌ 系統繁忙，請稍後再試一次";
             } finally {
                 btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
             }
         };
     </script>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; }
+        body { background: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
+        /* 科技藍按鈕波紋 */
         .btn-aura {
-            background: linear-gradient(135deg, #0066ff 0%, #0044cc 100%);
-            position: relative; overflow: hidden;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #0055ff;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
         }
-        /* 科技藍反光波紋 */
-        .btn-aura::before {
-            content: ''; position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: 0.6s;
+        .btn-aura:after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease-out, height 0.6s ease-out;
         }
-        .btn-aura:hover::before { left: 100%; }
-        .btn-aura:active { transform: scale(0.96); }
-        .animate-fade-in { animation: fadeIn 1s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-aura:active:after {
+            width: 500px;
+            height: 500px;
+            opacity: 0;
+        }
+        .aura-glow { text-shadow: 0 0 20px rgba(0, 85, 255, 0.6); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-6">
 
-    <div class="max-w-xl w-full space-y-12">
+    <div class="max-w-md w-full space-y-12">
         <div class="text-center">
-            <h1 class="text-6xl font-black italic tracking-tighter aura-glow">AURA <span class="text-blue-500 font-light">AI</span></h1>
-            <p class="text-zinc-600 text-[10px] tracking-[0.5em] mt-3 font-bold uppercase">FR Technology System</p>
+            <h1 class="text-5xl font-black italic aura-glow tracking-tighter uppercase">Aura AI</h1>
+            <p class="text-zinc-600 text-[10px] tracking-[0.5em] mt-3 font-bold">FR TECHNOLOGY SYSTEM</p>
         </div>
 
-        <div class="bg-zinc-900/80 p-8 rounded-[2.5rem] border border-zinc-800 shadow-2xl backdrop-blur-xl">
+        <div class="bg-zinc-900/90 p-8 rounded-[2.5rem] border border-zinc-800 shadow-2xl">
             <textarea id="prompt" 
-                class="w-full bg-transparent border-none focus:ring-0 text-xl md:text-2xl h-32 placeholder:text-zinc-800 text-white resize-none" 
-                placeholder="描述一個驚人的畫面..."></textarea>
+                class="w-full bg-transparent border-none focus:ring-0 text-xl h-24 placeholder:text-zinc-800 text-white resize-none" 
+                placeholder="描述一個畫面..."></textarea>
             
             <button id="gen-btn" onclick="generateAura()" 
-                class="btn-aura w-full py-5 mt-6 rounded-2xl font-black text-xl tracking-widest uppercase text-white shadow-lg shadow-blue-900/20">
-                啟動影片生成
+                class="btn-aura w-full py-5 mt-4 rounded-2xl font-black text-xl tracking-widest uppercase">
+                啟動生成
             </button>
-            <p id="status" class="mt-4 text-blue-400 text-xs font-bold tracking-widest"></p>
+            <p id="status" class="mt-4 text-blue-500 text-[10px] font-bold text-center tracking-widest h-4"></p>
         </div>
 
-        <div id="display" class="aspect-square w-full rounded-[2.5rem] bg-zinc-900/50 border border-zinc-800/50 flex flex-col items-center justify-center group overflow-hidden">
-            <div class="text-zinc-800 text-5xl mb-4 group-hover:scale-110 transition-transform">🎞️</div>
-            <p class="text-zinc-700 text-xs font-bold tracking-[0.2em]">AURA ENGINE STANDBY</p>
+        <div id="display" class="aspect-square w-full rounded-[2.5rem] bg-zinc-900 border border-zinc-800 flex flex-col items-center justify-center overflow-hidden shadow-inner">
+            <div class="text-zinc-800 text-6xl mb-4">🎨</div>
+            <p class="text-zinc-700 text-[10px] font-bold tracking-[0.2em]">AURA ENGINE READY</p>
         </div>
     </div>
 

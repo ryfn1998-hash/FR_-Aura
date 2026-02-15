@@ -4,97 +4,115 @@
     <meta charset="UTF-8">
     <title>Aura AI | FR 科技公司</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script type="module">
-        import { HfInference } from "https://cdn.jsdelivr.net/npm/@huggingface/inference@2.6.4/+esm";
-
-        // 使用您的 Token，並切換到最穩定的「極速」模型
-        const inference = new HfInference("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");
-
-        window.generateAura = async () => {
-            const prompt = document.getElementById('prompt').value;
-            const btn = document.getElementById('gen-btn');
-            const status = document.getElementById('status');
-            const display = document.getElementById('display');
-
-            if (!prompt) return alert("請輸入您的靈感描述");
-
-            try {
-                // UI 鎖定與動畫效果
-                btn.disabled = true;
-                btn.classList.add('opacity-50', 'cursor-not-allowed');
-                status.innerText = "⚡ Aura 正在接入全球算力網絡...";
-                
-                // 使用 SD-Light 模型：特點是速度極快，100% 響應
-                const blob = await inference.textToImage({
-                    model: "runwayml/stable-diffusion-v1-5", 
-                    inputs: prompt + ", high quality, digital art, masterpiece",
-                    parameters: { wait_for_model: true } // 強制等待模型加載，確保成功
-                });
-
-                const url = URL.createObjectURL(blob);
-                display.innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-[2.5rem] shadow-2xl animate-in fade-in duration-1000">`;
-                status.innerText = "✅ 生成成功！Aura 已完成創作";
-            } catch (err) {
-                console.error(err);
-                status.innerText = "❌ 系統繁忙，請稍後再試一次";
-            } finally {
-                btn.disabled = false;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
-            }
-        };
-    </script>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
-        /* 科技藍按鈕波紋 */
-        .btn-aura {
-            background: #0055ff;
+        body { background: #000; color: #fff; font-family: sans-serif; overflow: hidden; margin: 0; }
+        canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
+        
+        .aura-interface {
+            position: relative;
+            z-index: 10;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 3rem;
+            box-shadow: 0 0 50px rgba(0, 110, 255, 0.2);
+        }
+
+        .btn-glow {
+            background: linear-gradient(90deg, #0062ff, #00c3ff);
+            transition: 0.4s;
             position: relative;
             overflow: hidden;
-            transition: 0.3s;
         }
-        .btn-aura:after {
+
+        /* 觸控反光波紋 */
+        .btn-glow::after {
             content: '';
             position: absolute;
             top: 50%; left: 50%;
-            width: 0; height: 0;
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s ease-out, height 0.6s ease-out;
-        }
-        .btn-aura:active:after {
-            width: 500px;
-            height: 500px;
+            width: 5px; height: 5px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
             opacity: 0;
         }
-        .aura-glow { text-shadow: 0 0 20px rgba(0, 85, 255, 0.6); }
+
+        .btn-glow:active::after {
+            animation: ripple 0.6s ease-out;
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(0, 0); opacity: 0.5; }
+            100% { transform: scale(100, 100); opacity: 0; }
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-6">
+<body class="min-h-screen flex items-center justify-center p-6">
 
-    <div class="max-w-md w-full space-y-12">
-        <div class="text-center">
-            <h1 class="text-5xl font-black italic aura-glow tracking-tighter uppercase">Aura AI</h1>
-            <p class="text-zinc-600 text-[10px] tracking-[0.5em] mt-3 font-bold">FR TECHNOLOGY SYSTEM</p>
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="max-w-2xl w-full aura-interface p-12 text-center space-y-10">
+        <div>
+            <h1 class="text-6xl font-black italic tracking-tighter text-white">AURA <span class="text-blue-500">AI</span></h1>
+            <p class="text-blue-400 text-[10px] tracking-[0.5em] mt-4 font-bold uppercase">FR Technology Advanced Hub</p>
         </div>
 
-        <div class="bg-zinc-900/90 p-8 rounded-[2.5rem] border border-zinc-800 shadow-2xl">
-            <textarea id="prompt" 
-                class="w-full bg-transparent border-none focus:ring-0 text-xl h-24 placeholder:text-zinc-800 text-white resize-none" 
-                placeholder="描述一個畫面..."></textarea>
-            
-            <button id="gen-btn" onclick="generateAura()" 
-                class="btn-aura w-full py-5 mt-4 rounded-2xl font-black text-xl tracking-widest uppercase">
-                啟動生成
-            </button>
-            <p id="status" class="mt-4 text-blue-500 text-[10px] font-bold text-center tracking-widest h-4"></p>
+        <div class="space-y-6">
+            <div class="bg-zinc-900/50 rounded-3xl p-6 border border-zinc-800">
+                <p class="text-zinc-400 text-sm leading-relaxed">
+                    為了確保 100% 的生成成功率與算力穩定，<br>
+                    請點擊下方按鈕啟動 **Aura 專屬雲端控制台**。
+                </p>
+            </div>
+
+            <a href="https://black-forest-labs-flux-1-schnell.hf.space" target="_blank"
+                class="btn-glow block w-full py-6 rounded-2xl text-2xl font-black tracking-widest uppercase hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(0,98,255,0.5)]">
+                啟動 Aura 核心引擎
+            </a>
         </div>
 
-        <div id="display" class="aspect-square w-full rounded-[2.5rem] bg-zinc-900 border border-zinc-800 flex flex-col items-center justify-center overflow-hidden shadow-inner">
-            <div class="text-zinc-800 text-6xl mb-4">🎨</div>
-            <p class="text-zinc-700 text-[10px] font-bold tracking-[0.2em]">AURA ENGINE READY</p>
+        <div class="pt-6 border-t border-zinc-800">
+            <p class="text-zinc-600 text-[10px] font-bold tracking-widest">SYSTEM STATUS: READY / NO QUEUE</p>
         </div>
     </div>
 
+    <script>
+        // 粒子背景代碼
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x; this.y = y;
+                this.size = Math.random() * 3 + 1;
+                this.baseX = x; this.baseY = y;
+                this.density = (Math.random() * 30) + 1;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(0, 150, 255, 0.8)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        window.addEventListener('mousemove', function(e) {
+            particles.push(new Particle(e.x, e.y));
+            if (particles.length > 50) particles.shift();
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].draw();
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
 </body>
 </html>

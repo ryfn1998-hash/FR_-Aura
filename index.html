@@ -5,87 +5,91 @@
     <title>Aura AI | FR 科技公司</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --ios-blue: #007AFF; }
-        body { background: #000; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow-x: hidden; }
-        
+        :root { --ios-glow: linear-gradient(45deg, #ff2d55, #5856d6, #007aff, #5ac8fa, #ff2d55); }
+        body { background: #000; color: #fff; font-family: -apple-system, system-ui, sans-serif; overflow: hidden; }
+
         /* iOS 18 毛玻璃容器 */
-        .glass-panel {
-            background: rgba(25, 25, 25, 0.4);
-            backdrop-filter: blur(30px) saturate(180%);
-            -webkit-backdrop-filter: blur(30px) saturate(180%);
+        .glass-container {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(40px) saturate(150%);
+            -webkit-backdrop-filter: blur(40px) saturate(150%);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 3rem;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border-radius: 3.5rem;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
         }
 
-        /* iOS 18 流光按鈕 */
+        /* iOS 18 Apple Intelligence 流光按鈕 */
         .ios-btn {
             position: relative;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 1.5rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-            z-index: 10;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 1.2rem;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1;
         }
 
-        /* Apple Intelligence 霓虹流光邊框 */
+        /* 修正後的邊框流光 Bug */
         .ios-btn::before {
-            content: '';
+            content: "";
             position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            background: linear-gradient(45deg, #ff2d55, #5856d6, #007aff, #5ac8fa);
+            inset: -2px;
+            background: var(--ios-glow);
+            background-size: 400% 400%;
             z-index: -1;
-            filter: blur(8px);
+            border-radius: 1.3rem;
             opacity: 0;
-            transition: opacity 0.5s;
+            transition: opacity 0.3s;
+            animation: flow 8s linear infinite;
         }
 
-        .ios-btn:hover::before { opacity: 0.7; }
-        
-        .ios-btn:active {
-            transform: scale(0.96);
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+        .ios-btn:hover::before { opacity: 1; }
+        .ios-btn:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.15); }
+
+        @keyframes flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        /* 隱藏外站痕跡，達成變裝 */
-        .engine-wrap {
+        /* 嵌入引擎變裝：隱藏外站邊距 */
+        .engine-view {
+            width: 100%;
+            height: 520px;
+            background: #000;
             border-radius: 2rem;
             overflow: hidden;
-            background: #111;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
+        iframe { width: 100%; height: 100%; border: none; filter: brightness(1.1) contrast(1.1); }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
-    <div class="fixed top-0 left-0 w-full h-full -z-10 opacity-30">
-        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600 blur-[150px] rounded-full"></div>
-        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600 blur-[150px] rounded-full"></div>
+    <div class="fixed inset-0 -z-10">
+        <div class="absolute top-1/4 left-1/3 w-[500px] h-[500px] bg-blue-600/20 blur-[120px] rounded-full"></div>
+        <div class="absolute bottom-1/4 right-1/3 w-[500px] h-[500px] bg-purple-600/20 blur-[120px] rounded-full"></div>
     </div>
 
-    <div class="max-w-2xl w-full glass-panel p-10 md:p-14 text-center space-y-12">
+    <div class="max-w-2xl w-full glass-container p-8 md:p-12 text-center space-y-10">
         <header>
-            <h1 class="text-5xl font-extrabold italic tracking-tighter text-white">AURA <span class="text-blue-500">AI</span></h1>
-            <p class="text-zinc-500 text-[10px] tracking-[0.5em] mt-3 font-semibold uppercase opacity-70">FR Technology © 2026</p>
+            <h1 class="text-5xl font-black italic tracking-tighter aura-text">AURA <span class="text-blue-500">AI</span></h1>
+            <p class="text-zinc-500 text-[10px] tracking-[0.6em] mt-3 font-bold uppercase opacity-60">FR Tech High-Speed Core</p>
         </header>
 
-        <div class="engine-wrap shadow-2xl">
+        <div class="engine-view shadow-inner">
             <iframe 
                 src="https://black-forest-labs-flux-1-schnell.hf.space?__theme=dark" 
-                style="width:100%; height:550px; border:none;">
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share">
             </iframe>
         </div>
 
-        <div class="space-y-6">
-            <button class="ios-btn w-full py-5 text-xl font-bold tracking-widest text-white">
-                啟動極速 AI 生成
+        <div class="space-y-6 px-4">
+            <button class="ios-btn w-full py-4 text-lg font-bold tracking-widest text-white shadow-2xl">
+                啟動 Aura 極速運算
             </button>
-            <div class="flex items-center justify-center gap-3 text-zinc-500 text-[10px] font-bold tracking-widest">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_#22c55e]"></span>
-                CORE ENGINE STATUS: OPTIMAL
+            <div class="flex items-center justify-center gap-2 text-[9px] font-bold text-zinc-600 tracking-[0.3em]">
+                <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                CORE SYSTEM: SECURE & STABLE
             </div>
         </div>
     </div>

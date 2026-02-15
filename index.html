@@ -5,114 +5,90 @@
     <title>Aura AI | FR 科技公司</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; overflow: hidden; margin: 0; }
-        canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
+        :root { --ios-blue: #007AFF; }
+        body { background: #000; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow-x: hidden; }
         
-        .aura-interface {
-            position: relative;
-            z-index: 10;
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(20px);
+        /* iOS 18 毛玻璃容器 */
+        .glass-panel {
+            background: rgba(25, 25, 25, 0.4);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 3rem;
-            box-shadow: 0 0 50px rgba(0, 110, 255, 0.2);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        .btn-glow {
-            background: linear-gradient(90deg, #0062ff, #00c3ff);
-            transition: 0.4s;
+        /* iOS 18 流光按鈕 */
+        .ios-btn {
             position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
+            z-index: 10;
         }
 
-        /* 觸控反光波紋 */
-        .btn-glow::after {
+        /* Apple Intelligence 霓虹流光邊框 */
+        .ios-btn::before {
             content: '';
             position: absolute;
-            top: 50%; left: 50%;
-            width: 5px; height: 5px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 100%;
-            transform: scale(1, 1) translate(-50%);
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #ff2d55, #5856d6, #007aff, #5ac8fa);
+            z-index: -1;
+            filter: blur(8px);
             opacity: 0;
+            transition: opacity 0.5s;
         }
 
-        .btn-glow:active::after {
-            animation: ripple 0.6s ease-out;
+        .ios-btn:hover::before { opacity: 0.7; }
+        
+        .ios-btn:active {
+            transform: scale(0.96);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
         }
 
-        @keyframes ripple {
-            0% { transform: scale(0, 0); opacity: 0.5; }
-            100% { transform: scale(100, 100); opacity: 0; }
+        /* 隱藏外站痕跡，達成變裝 */
+        .engine-wrap {
+            border-radius: 2rem;
+            overflow: hidden;
+            background: #111;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6">
+<body class="min-h-screen flex items-center justify-center p-4">
 
-    <canvas id="particleCanvas"></canvas>
+    <div class="fixed top-0 left-0 w-full h-full -z-10 opacity-30">
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600 blur-[150px] rounded-full"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600 blur-[150px] rounded-full"></div>
+    </div>
 
-    <div class="max-w-2xl w-full aura-interface p-12 text-center space-y-10">
-        <div>
-            <h1 class="text-6xl font-black italic tracking-tighter text-white">AURA <span class="text-blue-500">AI</span></h1>
-            <p class="text-blue-400 text-[10px] tracking-[0.5em] mt-4 font-bold uppercase">FR Technology Advanced Hub</p>
+    <div class="max-w-2xl w-full glass-panel p-10 md:p-14 text-center space-y-12">
+        <header>
+            <h1 class="text-5xl font-extrabold italic tracking-tighter text-white">AURA <span class="text-blue-500">AI</span></h1>
+            <p class="text-zinc-500 text-[10px] tracking-[0.5em] mt-3 font-semibold uppercase opacity-70">FR Technology © 2026</p>
+        </header>
+
+        <div class="engine-wrap shadow-2xl">
+            <iframe 
+                src="https://black-forest-labs-flux-1-schnell.hf.space?__theme=dark" 
+                style="width:100%; height:550px; border:none;">
+            </iframe>
         </div>
 
         <div class="space-y-6">
-            <div class="bg-zinc-900/50 rounded-3xl p-6 border border-zinc-800">
-                <p class="text-zinc-400 text-sm leading-relaxed">
-                    為了確保 100% 的生成成功率與算力穩定，<br>
-                    請點擊下方按鈕啟動 **Aura 專屬雲端控制台**。
-                </p>
+            <button class="ios-btn w-full py-5 text-xl font-bold tracking-widest text-white">
+                啟動極速 AI 生成
+            </button>
+            <div class="flex items-center justify-center gap-3 text-zinc-500 text-[10px] font-bold tracking-widest">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_#22c55e]"></span>
+                CORE ENGINE STATUS: OPTIMAL
             </div>
-
-            <a href="https://black-forest-labs-flux-1-schnell.hf.space" target="_blank"
-                class="btn-glow block w-full py-6 rounded-2xl text-2xl font-black tracking-widest uppercase hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(0,98,255,0.5)]">
-                啟動 Aura 核心引擎
-            </a>
-        </div>
-
-        <div class="pt-6 border-t border-zinc-800">
-            <p class="text-zinc-600 text-[10px] font-bold tracking-widest">SYSTEM STATUS: READY / NO QUEUE</p>
         </div>
     </div>
 
-    <script>
-        // 粒子背景代碼
-        const canvas = document.getElementById('particleCanvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        class Particle {
-            constructor(x, y) {
-                this.x = x; this.y = y;
-                this.size = Math.random() * 3 + 1;
-                this.baseX = x; this.baseY = y;
-                this.density = (Math.random() * 30) + 1;
-            }
-            draw() {
-                ctx.fillStyle = 'rgba(0, 150, 255, 0.8)';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.closePath();
-                ctx.fill();
-            }
-        }
-
-        window.addEventListener('mousemove', function(e) {
-            particles.push(new Particle(e.x, e.y));
-            if (particles.length > 50) particles.shift();
-        });
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].draw();
-            }
-            requestAnimationFrame(animate);
-        }
-        animate();
-    </script>
 </body>
 </html>
